@@ -23,7 +23,7 @@ const EMPTY: &str = "⚫";
 const ROW: u8 = 11;
 const COLUMN: u8 = 11;
 
-type Area = [[Kind; 11]; 11];
+type Area = [[Kind; COLUMN as usize]; ROW as usize];
 
 /// A struct for creatures/entities in game which has X and Y coordinates.
 struct Entity {
@@ -142,7 +142,7 @@ impl GameTrait for Game {
 
 fn main() {
    let mut game = Game {
-      area: [[Kind::Empty; 11]; 11],
+      area: [[Kind::Empty; COLUMN as usize]; ROW as usize],
       player: Entity { x: 5, y: 5 },
       food: Entity { x: 7, y: 3 },
       score: 0,
