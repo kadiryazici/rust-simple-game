@@ -1,5 +1,8 @@
 use std::io::{stdin, stdout, Write};
 
+use colored::*;
+use rand::{thread_rng, Rng};
+
 /// Kind of Entity in area/game.
 #[derive(Copy, Clone)]
 enum Kind {
@@ -69,12 +72,19 @@ impl GameTrait for Game {
          }
          print!("\n");
       }
-      print!("SKOR :{}", self.score);
+      print!(
+         "{} {}",
+         "SKOR:".color(Color::White).on_bright_purple(),
+         self.score.to_string().bold().white()
+      );
    }
 
    /// Read's user key and moves player or exits the app.
    fn read_key(&mut self) -> () {
-      print!("\nBir değer bekleniyor (a, s, d, w): ");
+      print!(
+         "\nBir değer bekleniyor {}: ",
+         "(a, s, d, w)".red().on_white()
+      );
       if let Ok(_) = stdout().flush() {};
       let mut input = String::new();
       if let Ok(_) = stdin().read_line(&mut input) {
@@ -130,6 +140,22 @@ impl GameTrait for Game {
       }
       if self.player.x == self.food.x && self.player.y == self.food.y {
          self.score += 1;
+         let mut entity_vec: Vec<Entity> = vec![];
+         for y in 0..self.area.len() {
+            for (x, value) in self.area[y].iter().enumerate() {
+               if let Kind::Empty = value {
+                  entity_vec.push(Entity {
+                     x: x as u8,
+                     y: y as u8,
+                  });
+               }
+            }
+         }
+         let random_number = thread_rng().gen_range(0, entity_vec.len());
+         let new_position = &entity_vec[random_number];
+         self.area[new_position.y as usize][new_position.x as usize] = Kind::Food;
+         self.food.x = new_position.x;
+         self.food.y = new_position.y;
       }
    }
 
